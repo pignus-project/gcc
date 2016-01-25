@@ -86,7 +86,7 @@
 Summary: Various compilers (C, C++, Objective-C, Java, ...)
 Name: gcc
 Version: %{gcc_version}
-Release: %{gcc_release}%{?dist}
+Release: %{gcc_release}%{?dist}.pi1
 # libgcc, libgfortran, libgomp, libstdc++ and crtstuff have
 # GCC Runtime Exception.
 License: GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
@@ -1042,6 +1042,10 @@ CONFIGURE_OPTS="\
 	--with-tune=cortex-a8 --with-arch=armv7-a \
 	--with-float=hard --with-fpu=vfpv3-d16 --with-abi=aapcs-linux \
 %endif
+%ifarch armv6hl
+        --with-arch=armv6 --with-float=hard --with-fpu=vfp --with-abi=aapcs-linux \
+%endif
+
 %ifnarch sparc sparcv9 ppc
 	--build=%{gcc_target_platform} \
 %endif
@@ -3097,6 +3101,9 @@ fi
 %doc rpm.doc/changelogs/libcc1/ChangeLog*
 
 %changelog
+* Mon Jan 25 2016 Lubomir Rintel <lkundrak@v3.sk> 5.3.1-2.pi1
+- Add armv6hl
+
 * Tue Dec  8 2015 Jakub Jelinek <jakub@redhat.com> 5.3.1-2
 - work around doxygen 1.8.10 bugs (#1279639)
 
