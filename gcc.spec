@@ -86,7 +86,7 @@
 Summary: Various compilers (C, C++, Objective-C, Java, ...)
 Name: gcc
 Version: %{gcc_version}
-Release: %{gcc_release}%{?dist}
+Release: %{gcc_release}%{?dist}.pi1
 # libgcc, libgfortran, libgomp, libstdc++ and crtstuff have
 # GCC Runtime Exception.
 License: GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
@@ -1033,6 +1033,10 @@ CONFIGURE_OPTS="\
 %else
 	--with-arch=z9-109 --with-tune=z10 --enable-decimal-float \
 %endif
+%endif
+%ifarch armv6hl
+	--with-tune=arm1176jzf-s --with-arch=armv6 \
+	--with-float=hard --with-fpu=vfp --with-abi=aapcs-linux \
 %endif
 %ifarch armv7hl
 	--with-tune=cortex-a8 --with-arch=armv7-a \
@@ -3101,6 +3105,9 @@ fi
 %doc rpm.doc/changelogs/libcc1/ChangeLog*
 
 %changelog
+* Mon May 09 2016 Lubomir Rintel <lkundrak@v3.sk> 6.1.1-1.pi1
+- Add Raspberry Pi optimized armv6hl
+
 * Wed Apr 27 2016 Jakub Jelinek <jakub@redhat.com> 6.1.1-1
 - update from the trunk and 6 branch
   - GCC 6.1 release
