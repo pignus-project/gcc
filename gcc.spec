@@ -1,9 +1,9 @@
-%global DATE 20161221
-%global SVNREV 243852
+%global DATE 20170118
+%global SVNREV 244565
 %global gcc_version 6.3.1
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 1
+%global gcc_release 2
 %global _unpackaged_files_terminate_build 0
 %global _performance_build 1
 # Hardening slows the compiler way too much.
@@ -3107,6 +3107,17 @@ fi
 %doc rpm.doc/changelogs/libcc1/ChangeLog*
 
 %changelog
+* Wed Jan 18 2017 Jakub Jelinek <jakub@redhat.com> 6.3.1-2
+- update from the 6 branch
+  - PRs c++/71182, c++/77812, c++/78341, c++/78693, c++/78949, debug/78839,
+	driver/78863, fortran/78239, fortran/78866, libstdc++/78389,
+	libstdc++/78956, libstdc++/78991, lto/79042, middle-end/50199,
+	pch/78970, rtl-optimization/78255, rtl-optimization/78617,
+	sanitizer/65479, target/70668, target/78041, target/78253,
+	target/78900, target/79044, translation/78745, translation/78922,
+	tree-optimization/71055, tree-optimization/78024,
+	tree-optimization/78428, tree-optimization/78886
+
 * Wed Dec 21 2016 Jakub Jelinek <jakub@redhat.com> 6.3.1-1
 - update from the 6 branch
   - GCC 6.3 release
