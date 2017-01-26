@@ -1561,10 +1561,10 @@ mv -f %{buildroot}%{_prefix}/%{_lib}/libmpx.*a $FULLLPATH/
 mv -f %{buildroot}%{_prefix}/%{_lib}/libmpxwrappers.*a $FULLLPATH/
 %endif
 %if %{build_libtsan}
-mv -f %{buildroot}%{_prefix}/%{_lib}/libtsan.*a $FULLLPATH/
+mv -f %{buildroot}%{_prefix}/%{_lib}/libtsan.*a $FULLPATH/
 %endif
 %if %{build_liblsan}
-mv -f %{buildroot}%{_prefix}/%{_lib}/liblsan.*a $FULLLPATH/
+mv -f %{buildroot}%{_prefix}/%{_lib}/liblsan.*a $FULLPATH/
 %endif
 %if %{build_go}
 mv -f %{buildroot}%{_prefix}/%{_lib}/libgo.*a $FULLLPATH/
@@ -2540,15 +2540,6 @@ fi
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libmpxwrappers.a
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libmpxwrappers.so
 %endif
-%if %{build_libtsan}
-%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libtsan.a
-%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libtsan.so
-%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libtsan_preinit.o
-%endif
-%if %{build_liblsan}
-%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/liblsan.a
-%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/liblsan.so
-%endif
 %else
 %if %{build_libatomic}
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libatomic.so
@@ -2567,13 +2558,13 @@ fi
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libmpx.so
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libmpxwrappers.so
 %endif
+%endif
 %if %{build_libtsan}
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libtsan.so
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/libtsan_preinit.o
 %endif
 %if %{build_liblsan}
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/liblsan.so
-%endif
 %endif
 %{_prefix}/libexec/getconf/default
 %doc gcc/README* rpm.doc/changelogs/gcc/ChangeLog* 
