@@ -1,10 +1,10 @@
-%global DATE 20170126
-%global SVNREV 244932
+%global DATE 20170128
+%global SVNREV 245003
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.2
+%global gcc_release 0.3
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -3232,6 +3232,14 @@ fi
 %endif
 
 %changelog
+* Sat Jan 28 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.3
+- update from the trunk
+  - PRs c++/64382, c++/68727, c++/78771, c++/79176, debug/78835, debug/79129,
+	libstdc++/79190, libstdc++/79243, libstdc++/79254,
+	rtl-optimization/78559, rtl-optimization/79194, target/65484,
+	target/79131, target/79239, tree-optimization/71374,
+	tree-optimization/79244, tree-optimization/79245
+
 * Thu Jan 26 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.2
 - update from the trunk
   - PRs bootstrap/79132, bootstrap/79198, c++/71290, c++/71406, c++/71710,
