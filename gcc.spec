@@ -998,7 +998,7 @@ mkdir obj-offload-nvptx-none
 cd obj-offload-nvptx-none
 CC="$CC" CXX="$CXX" CFLAGS="$OPT_FLAGS" \
 	CXXFLAGS="`echo " $OPT_FLAGS " | sed 's/ -Wall / /g;s/ -fexceptions / /g' \
-		  | sed 's/ -Werror=format-security / -Wformat -Werror=format-security /'`" \
+		  | sed 's/ -Werror=format-security / -Wformat -Wformat-security /'`" \
 	XCFLAGS="$OPT_FLAGS" TCFLAGS="$OPT_FLAGS" \
 	../configure --disable-bootstrap --disable-sjlj-exceptions \
 	--enable-newlib-io-long-long --with-build-time-tools=${IROOT}%{_prefix}/nvptx-none/bin \
