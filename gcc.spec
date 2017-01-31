@@ -231,7 +231,6 @@ Patch11: gcc7-s390-asan.patch
 Patch12: gcc7-pr79197.patch
 Patch13: gcc7-pr79232.patch
 Patch14: gcc7-pr79288.patch
-Patch15: gcc7-pr79170-workaround.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -823,7 +822,6 @@ package or when debugging this package.
 %patch12 -p0 -b .pr79197~
 %patch13 -p0 -b .pr79232~
 %patch14 -p0 -b .pr79288~
-%patch15 -p0 -b .pr79170-workaround~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
@@ -3251,8 +3249,6 @@ fi
   (PR target/79197)
 - fix C++ ICE with comma expression on lhs of assignment (PR c++/79232)
 - fix default TLS model for C++ non-inline static data members (PR c++/79288)
-- add workaround for powerpc constant size memcmp expansion bug (#1417753,
-  PR target/79170)
 - libcp1plugin.so added to gcc-gdb-plugin for C++ support
 
 * Sat Jan 28 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.3
