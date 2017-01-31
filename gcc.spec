@@ -1,10 +1,10 @@
-%global DATE 20170128
-%global SVNREV 245003
+%global DATE 20170131
+%global SVNREV 245054
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.3
+%global gcc_release 0.4
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -228,6 +228,10 @@ Patch8: gcc7-no-add-needed.patch
 Patch9: gcc7-aarch64-async-unw-tables.patch
 Patch10: gcc7-foffload-default.patch
 Patch11: gcc7-s390-asan.patch
+Patch12: gcc7-pr79197.patch
+Patch13: gcc7-pr79232.patch
+Patch14: gcc7-pr79288.patch
+Patch15: gcc7-pr79170-workaround.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -816,6 +820,10 @@ package or when debugging this package.
 %patch9 -p0 -b .aarch64-async-unw-tables~
 %patch10 -p0 -b .foffload-default~
 %patch11 -p0 -b .s390-asan~
+%patch12 -p0 -b .pr79197~
+%patch13 -p0 -b .pr79232~
+%patch14 -p0 -b .pr79288~
+%patch15 -p0 -b .pr79170-workaround~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
@@ -1248,7 +1256,7 @@ rm -rf %{buildroot}%{_prefix}/libexec/gcc/%{gcc_target_platform}/%{gcc_major}/ac
 rm -rf %{buildroot}%{_infodir} %{buildroot}%{_mandir}/man7 %{buildroot}%{_prefix}/share/locale
 rm -rf %{buildroot}%{_prefix}/lib/gcc/nvptx-none/%{gcc_major}/{install-tools,plugin}
 rm -rf %{buildroot}%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/accel/nvptx-none/{install-tools,plugin,include-fixed}
-rm -rf %{buildroot}%{_prefix}/%{_lib}/libcc1*
+rm -rf %{buildroot}%{_prefix}/%{_lib}/libc[cp]1*
 mv -f %{buildroot}%{_prefix}/nvptx-none/lib/*.{a,spec} %{buildroot}%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/accel/nvptx-none/
 mv -f %{buildroot}%{_prefix}/nvptx-none/lib/mgomp/*.{a,spec} %{buildroot}%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/accel/nvptx-none/mgomp/
 mv -f %{buildroot}%{_prefix}/lib/gcc/nvptx-none/%{gcc_major}/*.a %{buildroot}%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/accel/nvptx-none/
@@ -3206,6 +3214,7 @@ fi
 %dir %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}
 %dir %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/plugin
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/plugin/libcc1plugin.so*
+%{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/plugin/libcp1plugin.so*
 %doc rpm.doc/changelogs/libcc1/ChangeLog*
 
 %if %{build_offload_nvptx}
@@ -3232,6 +3241,20 @@ fi
 %endif
 
 %changelog
+* Tue Jan 31 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.4
+- update from the trunk
+  - PRs bootstrap/78985, debug/63238, debug/79289, gcov-profile/79259,
+	target/78945, target/79170, target/79240, target/79260, target/79268,
+	testsuite/70583, testsuite/79293, tree-optimization/79256,
+	tree-optimization/79267, tree-optimization/79276
+- fix ICEs with powerpc conversion of float/double to 64-bit unsigned integer
+  (PR target/79197)
+- fix C++ ICE with comma expression on lhs of assignment (PR c++/79232)
+- fix default TLS model for C++ non-inline static data members (PR c++/79288)
+- add workaround for powerpc constant size memcmp expansion bug (#1417753,
+  PR target/79170)
+- libcp1plugin.so added to gcc-gdb-plugin for C++ support
+
 * Sat Jan 28 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.3
 - update from the trunk
   - PRs c++/64382, c++/68727, c++/78771, c++/79176, debug/78835, debug/79129,
