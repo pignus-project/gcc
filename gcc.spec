@@ -1,10 +1,10 @@
-%global DATE 20170131
-%global SVNREV 245054
+%global DATE 20170201
+%global SVNREV 245093
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.4
+%global gcc_release 0.5
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -227,10 +227,9 @@ Patch7: gcc7-libstdc++-docs.patch
 Patch8: gcc7-no-add-needed.patch
 Patch9: gcc7-aarch64-async-unw-tables.patch
 Patch10: gcc7-foffload-default.patch
-Patch11: gcc7-s390-asan.patch
-Patch12: gcc7-pr79197.patch
-Patch13: gcc7-pr79232.patch
-Patch14: gcc7-pr79288.patch
+Patch11: gcc7-pr79197.patch
+Patch12: gcc7-pr79232.patch
+Patch13: gcc7-pr79288.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -818,10 +817,9 @@ package or when debugging this package.
 %patch8 -p0 -b .no-add-needed~
 %patch9 -p0 -b .aarch64-async-unw-tables~
 %patch10 -p0 -b .foffload-default~
-%patch11 -p0 -b .s390-asan~
-%patch12 -p0 -b .pr79197~
-%patch13 -p0 -b .pr79232~
-%patch14 -p0 -b .pr79288~
+%patch11 -p0 -b .pr79197~
+%patch12 -p0 -b .pr79232~
+%patch13 -p0 -b .pr79288~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
@@ -3239,6 +3237,13 @@ fi
 %endif
 
 %changelog
+* Wed Feb  1 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.5
+- update from the trunk
+  - PRs c++/67273, c++/79253, c++/79264, c++/79290, c++/79298, c++/79304,
+	fortran/79305, ipa/79285, middle-end/79315, preprocessor/79210,
+	target/78597, target/79038, tree-optimization/71691,
+	tree-optimization/71824, tree-optimization/77318
+
 * Tue Jan 31 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.4
 - update from the trunk
   - PRs bootstrap/78985, debug/63238, debug/79289, gcov-profile/79259,
@@ -3262,7 +3267,7 @@ fi
 * Thu Jan 26 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.2
 - update from the trunk
   - PRs bootstrap/79132, bootstrap/79198, c++/71290, c++/71406, c++/71710,
-  	c++/77508, c++/77914, c++/78469, c++/78896, c++/79118, c++/79205,
+	c++/77508, c++/77914, c++/78469, c++/78896, c++/79118, c++/79205,
 	c/79199, debug/78363, fortran/79154, ipa/79108, libstdc++/61791,
 	libstdc++/70607, libstdc++/79195, libstdc++/79206, middle-end/78703,
 	middle-end/79123, middle-end/79212, middle-end/79236,
