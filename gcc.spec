@@ -1,10 +1,10 @@
-%global DATE 20170201
-%global SVNREV 245093
+%global DATE 20170204
+%global SVNREV 245184
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.5
+%global gcc_release 0.6
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -227,9 +227,8 @@ Patch7: gcc7-libstdc++-docs.patch
 Patch8: gcc7-no-add-needed.patch
 Patch9: gcc7-aarch64-async-unw-tables.patch
 Patch10: gcc7-foffload-default.patch
-Patch11: gcc7-pr79197.patch
-Patch12: gcc7-pr79232.patch
-Patch13: gcc7-pr79288.patch
+Patch11: gcc7-pr79232.patch
+Patch12: gcc7-pr79288.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -817,9 +816,8 @@ package or when debugging this package.
 %patch8 -p0 -b .no-add-needed~
 %patch9 -p0 -b .aarch64-async-unw-tables~
 %patch10 -p0 -b .foffload-default~
-%patch11 -p0 -b .pr79197~
-%patch12 -p0 -b .pr79232~
-%patch13 -p0 -b .pr79288~
+%patch11 -p0 -b .pr79232~
+%patch12 -p0 -b .pr79288~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
@@ -1120,7 +1118,11 @@ CONFIGURE_OPTS="\
 %if 0%{?rhel} >= 7
 	--with-arch=z196 --with-tune=zEC12 --enable-decimal-float \
 %else
+%if 0%{?fedora} >= 26
+	--with-arch=zEC12 --with-tune=z13 --enable-decimal-float \
+%else
 	--with-arch=z9-109 --with-tune=z10 --enable-decimal-float \
+%endif
 %endif
 %endif
 %ifarch armv7hl
@@ -3237,6 +3239,18 @@ fi
 %endif
 
 %changelog
+* Sat Feb  4 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.6
+- update from the trunk
+  - PRs ada/79309, c++/12245, c++/69637, c++/78689, c++/79294, cp/14179,
+	ipa/79337, libstdc++/60936, libstdc++/78346, lto/66295,
+	middle-end/32003, middle-end/78142, middle-end/78468,
+	middle-end/79275, sanitizer/78663, target/70012, target/78862,
+	target/79158, target/79354, testsuite/76957, testsuite/79272,
+	testsuite/79324, tree-optimization/79327, tree-optimization/79338,
+	tree-optimization/79339, tree-optimization/79340,
+	tree-optimization/79352
+- default to -march=zEC12 -mtune=z13 on s390x (#1404991)
+
 * Wed Feb  1 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.5
 - update from the trunk
   - PRs c++/67273, c++/79253, c++/79264, c++/79290, c++/79298, c++/79304,
