@@ -533,7 +533,7 @@
 --- gcc/graphite.c.jj	2015-11-04 14:15:32.000000000 +0100
 +++ gcc/graphite.c	2015-11-04 14:56:02.645536409 +0100
 @@ -54,6 +54,34 @@ along with GCC; see the file COPYING3.
- #include "tree-cfgcleanup.h"
+ #include "tree-vectorizer.h"
  #include "graphite.h"
  
 +__typeof (isl_pointers__) isl_pointers__;
