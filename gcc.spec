@@ -233,7 +233,7 @@ Patch9: gcc7-aarch64-async-unw-tables.patch
 Patch10: gcc7-foffload-default.patch
 Patch11: gcc7-pr79232.patch
 Patch12: gcc7-pr79288.patch
-Patch13: gcc7-pr79331.patch
+Patch13: gcc7-pr79341.patch
 Patch14: gcc7-s390x-libsanitizer-CVE.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
