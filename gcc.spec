@@ -170,7 +170,7 @@ BuildRequires: libunwind >= 0.98
 %if %{build_isl}
 BuildRequires: isl = %{isl_version}
 BuildRequires: isl-devel = %{isl_version}
-%if %{__isa_bits} == 64
+%if 0%{?__isa_bits} == 64
 Requires: libisl.so.15()(64bit)
 %else
 Requires: libisl.so.15
