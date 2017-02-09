@@ -35,7 +35,7 @@
  
  #ifdef HAVE_ISL_OPTIONS_SET_SCHEDULE_SERIALIZE_SCCS
  /* isl 0.15 or later.  */
-@@ -47,6 +48,494 @@ along with GCC; see the file COPYING3.
+@@ -47,6 +48,591 @@ along with GCC; see the file COPYING3.
  # define isl_stat_ok 0
  #endif
  
@@ -279,7 +279,55 @@
 +  DYNSYM (isl_map_coalesce); \
 +  DYNSYM (isl_printer_print_schedule); \
 +  DYNSYM (isl_set_set_dim_id); \
-+  DYNSYM (isl_union_map_coalesce);
++  DYNSYM (isl_union_map_coalesce); \
++  DYNSYM (isl_multi_val_set_val); \
++  DYNSYM (isl_multi_val_zero); \
++  DYNSYM (isl_options_set_schedule_max_coefficient); \
++  DYNSYM (isl_options_set_tile_scale_tile_loops); \
++  DYNSYM (isl_schedule_copy); \
++  DYNSYM (isl_schedule_get_map); \
++  DYNSYM (isl_schedule_map_schedule_node_bottom_up); \
++  DYNSYM (isl_schedule_node_band_get_permutable); \
++  DYNSYM (isl_schedule_node_band_get_space); \
++  DYNSYM (isl_schedule_node_band_tile); \
++  DYNSYM (isl_schedule_node_child); \
++  DYNSYM (isl_schedule_node_free); \
++  DYNSYM (isl_schedule_node_get_child); \
++  DYNSYM (isl_schedule_node_get_ctx); \
++  DYNSYM (isl_schedule_node_get_type); \
++  DYNSYM (isl_schedule_node_n_children); \
++  DYNSYM (isl_union_map_is_equal); \
++  DYNSYM (isl_union_access_info_compute_flow); \
++  DYNSYM (isl_union_access_info_from_sink); \
++  DYNSYM (isl_union_access_info_set_may_source); \
++  DYNSYM (isl_union_access_info_set_must_source); \
++  DYNSYM (isl_union_access_info_set_schedule); \
++  DYNSYM (isl_union_flow_free); \
++  DYNSYM (isl_union_flow_get_may_dependence); \
++  DYNSYM (isl_union_flow_get_must_dependence); \
++  DYNSYM (isl_aff_var_on_domain); \
++  DYNSYM (isl_multi_aff_from_aff); \
++  DYNSYM (isl_schedule_get_ctx); \
++  DYNSYM (isl_multi_aff_set_tuple_id); \
++  DYNSYM (isl_multi_aff_dim); \
++  DYNSYM (isl_schedule_get_domain); \
++  DYNSYM (isl_union_set_is_empty); \
++  DYNSYM (isl_union_set_get_space); \
++  DYNSYM (isl_union_pw_multi_aff_empty); \
++  DYNSYM (isl_union_set_foreach_set); \
++  DYNSYM (isl_union_set_free); \
++  DYNSYM (isl_multi_union_pw_aff_from_union_pw_multi_aff); \
++  DYNSYM (isl_multi_union_pw_aff_apply_multi_aff); \
++  DYNSYM (isl_schedule_insert_partial_schedule); \
++  DYNSYM (isl_union_pw_multi_aff_free); \
++  DYNSYM (isl_pw_multi_aff_project_out_map); \
++  DYNSYM (isl_union_pw_multi_aff_add_pw_multi_aff); \
++  DYNSYM (isl_schedule_from_domain); \
++  DYNSYM (isl_schedule_sequence); \
++  DYNSYM (isl_ast_build_node_from_schedule); \
++  DYNSYM (isl_ast_node_mark_get_node); \
++  DYNSYM (isl_schedule_node_band_member_get_ast_loop_type); \
++  DYNSYM (isl_schedule_node_band_member_set_ast_loop_type);
 +
 +extern struct isl_pointers_s__
 +{
@@ -527,6 +575,55 @@
 +#define isl_set_set_dim_id (*isl_pointers__.p_isl_set_set_dim_id)
 +#define isl_union_map_coalesce (*isl_pointers__.p_isl_union_map_coalesce)
 +
++#define isl_multi_val_set_val (*isl_pointers__.p_isl_multi_val_set_val)
++#define isl_multi_val_zero (*isl_pointers__.p_isl_multi_val_zero)
++#define isl_options_set_schedule_max_coefficient (*isl_pointers__.p_isl_options_set_schedule_max_coefficient)
++#define isl_options_set_tile_scale_tile_loops (*isl_pointers__.p_isl_options_set_tile_scale_tile_loops)
++#define isl_schedule_copy (*isl_pointers__.p_isl_schedule_copy)
++#define isl_schedule_get_map (*isl_pointers__.p_isl_schedule_get_map)
++#define isl_schedule_map_schedule_node_bottom_up (*isl_pointers__.p_isl_schedule_map_schedule_node_bottom_up)
++#define isl_schedule_node_band_get_permutable (*isl_pointers__.p_isl_schedule_node_band_get_permutable)
++#define isl_schedule_node_band_get_space (*isl_pointers__.p_isl_schedule_node_band_get_space)
++#define isl_schedule_node_band_tile (*isl_pointers__.p_isl_schedule_node_band_tile)
++#define isl_schedule_node_child (*isl_pointers__.p_isl_schedule_node_child)
++#define isl_schedule_node_free (*isl_pointers__.p_isl_schedule_node_free)
++#define isl_schedule_node_get_child (*isl_pointers__.p_isl_schedule_node_get_child)
++#define isl_schedule_node_get_ctx (*isl_pointers__.p_isl_schedule_node_get_ctx)
++#define isl_schedule_node_get_type (*isl_pointers__.p_isl_schedule_node_get_type)
++#define isl_schedule_node_n_children (*isl_pointers__.p_isl_schedule_node_n_children)
++#define isl_union_map_is_equal (*isl_pointers__.p_isl_union_map_is_equal)
++#define isl_union_access_info_compute_flow (*isl_pointers__.p_isl_union_access_info_compute_flow)
++#define isl_union_access_info_from_sink (*isl_pointers__.p_isl_union_access_info_from_sink)
++#define isl_union_access_info_set_may_source (*isl_pointers__.p_isl_union_access_info_set_may_source)
++#define isl_union_access_info_set_must_source (*isl_pointers__.p_isl_union_access_info_set_must_source)
++#define isl_union_access_info_set_schedule (*isl_pointers__.p_isl_union_access_info_set_schedule)
++#define isl_union_flow_free (*isl_pointers__.p_isl_union_flow_free)
++#define isl_union_flow_get_may_dependence (*isl_pointers__.p_isl_union_flow_get_may_dependence)
++#define isl_union_flow_get_must_dependence (*isl_pointers__.p_isl_union_flow_get_must_dependence)
++#define isl_aff_var_on_domain (*isl_pointers__.p_isl_aff_var_on_domain)
++#define isl_multi_aff_from_aff (*isl_pointers__.p_isl_multi_aff_from_aff)
++#define isl_schedule_get_ctx (*isl_pointers__.p_isl_schedule_get_ctx)
++#define isl_multi_aff_set_tuple_id (*isl_pointers__.p_isl_multi_aff_set_tuple_id)
++#define isl_multi_aff_dim (*isl_pointers__.p_isl_multi_aff_dim)
++#define isl_schedule_get_domain (*isl_pointers__.p_isl_schedule_get_domain)
++#define isl_union_set_is_empty (*isl_pointers__.p_isl_union_set_is_empty)
++#define isl_union_set_get_space (*isl_pointers__.p_isl_union_set_get_space)
++#define isl_union_pw_multi_aff_empty (*isl_pointers__.p_isl_union_pw_multi_aff_empty)
++#define isl_union_set_foreach_set (*isl_pointers__.p_isl_union_set_foreach_set)
++#define isl_union_set_free (*isl_pointers__.p_isl_union_set_free)
++#define isl_multi_union_pw_aff_from_union_pw_multi_aff (*isl_pointers__.p_isl_multi_union_pw_aff_from_union_pw_multi_aff)
++#define isl_multi_union_pw_aff_apply_multi_aff (*isl_pointers__.p_isl_multi_union_pw_aff_apply_multi_aff)
++#define isl_schedule_insert_partial_schedule (*isl_pointers__.p_isl_schedule_insert_partial_schedule)
++#define isl_union_pw_multi_aff_free (*isl_pointers__.p_isl_union_pw_multi_aff_free)
++#define isl_pw_multi_aff_project_out_map (*isl_pointers__.p_isl_pw_multi_aff_project_out_map)
++#define isl_union_pw_multi_aff_add_pw_multi_aff (*isl_pointers__.p_isl_union_pw_multi_aff_add_pw_multi_aff)
++#define isl_schedule_from_domain (*isl_pointers__.p_isl_schedule_from_domain)
++#define isl_schedule_sequence (*isl_pointers__.p_isl_schedule_sequence)
++#define isl_ast_build_node_from_schedule (*isl_pointers__.p_isl_ast_build_node_from_schedule)
++#define isl_ast_node_mark_get_node (*isl_pointers__.p_isl_ast_node_mark_get_node)
++#define isl_schedule_node_band_member_get_ast_loop_type (*isl_pointers__.p_isl_schedule_node_band_member_get_ast_loop_type)
++#define isl_schedule_node_band_member_set_ast_loop_type (*isl_pointers__.p_isl_schedule_node_band_member_set_ast_loop_type)
++
  typedef struct poly_dr *poly_dr_p;
  
  typedef struct poly_bb *poly_bb_p;
@@ -545,7 +642,7 @@
 +
 +  if (isl_pointers__.inited)
 +    return isl_pointers__.h != NULL;
-+  h = dlopen ("libisl.so.13", RTLD_LAZY);
++  h = dlopen ("libisl.so.15", RTLD_LAZY);
 +  isl_pointers__.h = h;
 +  if (h == NULL)
 +    return false;

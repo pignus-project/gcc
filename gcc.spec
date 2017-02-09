@@ -1,10 +1,10 @@
-%global DATE 20170204
-%global SVNREV 245184
+%global DATE 20170209
+%global SVNREV 245310
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.6
+%global gcc_release 0.7
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -118,7 +118,7 @@ Source1: nvptx-tools-%{nvptx_tools_gitrev}.tar.bz2
 # git archive origin/master --prefix=nvptx-newlib-%{nvptx_newlib_gitrev}/ | bzip2 -9 > ../nvptx-newlib-%{nvptx_newlib_gitrev}.tar.bz2
 # cd ..; rm -rf nvptx-newlib
 Source2: nvptx-newlib-%{nvptx_newlib_gitrev}.tar.bz2
-%global isl_version 0.14
+%global isl_version 0.16.1
 URL: http://gcc.gnu.org
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # Need binutils with -pie support >= 2.14.90.0.4-4
@@ -170,7 +170,11 @@ BuildRequires: libunwind >= 0.98
 %if %{build_isl}
 BuildRequires: isl = %{isl_version}
 BuildRequires: isl-devel = %{isl_version}
-Requires: isl = %{isl_version}
+%if %{__isa_bits} == 64
+Requires: libisl.so.15()(64bit)
+%else
+Requires: libisl.so.15
+%endif
 %endif
 %if %{build_libstdcxx_docs}
 BuildRequires: doxygen >= 1.7.1
@@ -229,6 +233,8 @@ Patch9: gcc7-aarch64-async-unw-tables.patch
 Patch10: gcc7-foffload-default.patch
 Patch11: gcc7-pr79232.patch
 Patch12: gcc7-pr79288.patch
+Patch13: gcc7-pr79331.patch
+Patch14: gcc7-s390x-libsanitizer-CVE.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -818,6 +824,8 @@ package or when debugging this package.
 %patch10 -p0 -b .foffload-default~
 %patch11 -p0 -b .pr79232~
 %patch12 -p0 -b .pr79288~
+%patch13 -p0 -b .pr79341~
+%patch14 -p0 -b .s390x-libsanitizer-CVE~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
@@ -3239,6 +3247,22 @@ fi
 %endif
 
 %changelog
+* Thu Feb  9 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.7
+- update from the trunk
+  - PRs c++/70448, c++/71193, c++/79360, c++/79372, c++/79377, c++/79379,
+	c++/79429, c/79413, c/79428, c/79431, fortran/78958, fortran/79230,
+	fortran/79335, fortran/79344, ipa/79375, libstdc++/79323,
+	middle-end/79278, middle-end/79399, rtl-optimization/68664,
+	rtl-optimization/79386, target/66144, target/68972, target/78604,
+	target/78883, target/79299, target/79353, translation/79397,
+	tree-optimization/69823, tree-optimization/78348,
+	tree-optimization/79284, tree-optimization/79376,
+	tree-optimization/79408, tree-optimization/79409, tree-ssa/79347
+- fix addition of OFFLOAD_TARGET_DEFAULT env var in gcc driver
+- use isl 0.16.1 instead of 0.14
+- fix s390x libasan __tls_get_offset interception (PR sanitizer/79341)
+- list fixed RHEL{6,7} kernels in CVE-2016-2143 s390x libsanitizer whitelist
+
 * Sat Feb  4 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.6
 - update from the trunk
   - PRs ada/79309, c++/12245, c++/69637, c++/78689, c++/79294, cp/14179,

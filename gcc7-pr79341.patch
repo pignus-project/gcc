@@ -1,0 +1,84 @@
+2017-02-08  Jakub Jelinek  <jakub@redhat.com>
+
+	PR sanitizer/79341
+	* sanitizer_common/sanitizer_common_interceptors.inc
+	(INIT_TLS_GET_ADDR): INTERCEPT_FUNCTION __tls_get_offset rather than
+	__tls_get_addr_internal.
+	(__tls_get_addr_internal): Call __tls_get_offset_wrapper with
+	REAL(__tls_get_offset) as another arugment instead of calling
+	REAL(__tls_get_addr_internal).
+	(__tls_get_offset): Call __tls_get_addr_hidden instead of
+	__interceptor___tls_get_addr_internal_protected.
+	(__tls_get_offset_wrapper): New function.
+
+--- libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc.jj	2017-02-07 11:08:15.000000000 -0500
++++ libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc	2017-02-08 05:28:58.656850984 -0500
+@@ -4550,11 +4550,15 @@ void *__tls_get_addr_opt(void *arg);
+ //   descriptor offset as an argument instead of a pointer.  GOT address
+ //   is passed in r12, so it's necessary to write it in assembly.  This is
+ //   the function used by the compiler.
+-#define INIT_TLS_GET_ADDR COMMON_INTERCEPT_FUNCTION(__tls_get_addr_internal)
++extern "C" uptr __tls_get_offset_wrapper (void *arg, uptr (*fn) (void *));
++#define INIT_TLS_GET_ADDR COMMON_INTERCEPT_FUNCTION(__tls_get_offset)
++DEFINE_REAL(uptr, __tls_get_offset, void *arg)
++extern "C" uptr __tls_get_offset (void *arg);
++extern "C" uptr __interceptor___tls_get_offset (void *arg);
+ INTERCEPTOR(uptr, __tls_get_addr_internal, void *arg) {
+   void *ctx;
+   COMMON_INTERCEPTOR_ENTER(ctx, __tls_get_addr_internal, arg);
+-  uptr res = REAL(__tls_get_addr_internal)(arg);
++  uptr res = __tls_get_offset_wrapper(arg, REAL(__tls_get_offset));
+   uptr tp = reinterpret_cast<uptr>(__builtin_thread_pointer());
+   void *ptr = reinterpret_cast<void *>(res + tp);
+   uptr tls_begin, tls_end;
+@@ -4569,29 +4573,42 @@ INTERCEPTOR(uptr, __tls_get_addr_interna
+ // We need a protected symbol aliasing the above, so that we can jump
+ // directly to it from the assembly below.
+ extern "C" __attribute__((alias("__interceptor___tls_get_addr_internal"),
+-                          visibility("protected")))
+-uptr __interceptor___tls_get_addr_internal_protected(void *arg);
++                          visibility("hidden")))
++uptr __tls_get_addr_hidden(void *arg);
+ // Now carefully intercept __tls_get_offset.
+ asm(
+   ".text\n"
+-  ".global __tls_get_offset\n"
+-  "__tls_get_offset:\n"
+ // The __intercept_ version has to exist, so that gen_dynamic_list.py
+ // exports our symbol.
++  ".weak __tls_get_offset\n"
++  ".type __tls_get_offset, @function\n"
++  "__tls_get_offset:\n"
+   ".global __interceptor___tls_get_offset\n"
++  ".type __interceptor___tls_get_offset, @function\n"
+   "__interceptor___tls_get_offset:\n"
+ #ifdef __s390x__
+   "la %r2, 0(%r2,%r12)\n"
+-  "jg __interceptor___tls_get_addr_internal_protected\n"
++  "jg __tls_get_addr_hidden\n"
+ #else
+   "basr %r3,0\n"
+   "0: la %r2,0(%r2,%r12)\n"
+   "l %r4,1f-0b(%r3)\n"
+   "b 0(%r4,%r3)\n"
+-  "1: .long __interceptor___tls_get_addr_internal_protected - 0b\n"
++  "1: .long __tls_get_addr_hidden - 0b\n"
+ #endif
+-  ".type __tls_get_offset, @function\n"
+-  ".size __tls_get_offset, .-__tls_get_offset\n"
++  ".size __interceptor___tls_get_offset, .-__interceptor___tls_get_offset\n"
++// Assembly wrapper to call REAL(__tls_get_offset)(arg)
++  ".type __tls_get_offset_wrapper, @function\n"
++  "__tls_get_offset_wrapper:\n"
++#ifdef __s390x__
++  "sgr %r2,%r12\n"
++  "lgr %r1,%r3\n"
++#else
++  "sr %r2,%r12\n"
++  "lr %r1,%r3\n"
++#endif
++  "br %r1\n"
++  ".size __tls_get_offset_wrapper, .-__tls_get_offset_wrapper\n"
+ );
+ #endif // SANITIZER_S390
+ #else

@@ -38,16 +38,12 @@ libgomp/
  
    if (output_file
        && strcmp (output_file, "-") != 0
-@@ -7693,6 +7700,12 @@ driver::maybe_putenv_OFFLOAD_TARGETS ()
+@@ -7693,6 +7700,8 @@ driver::maybe_putenv_OFFLOAD_TARGETS ()
        obstack_grow (&collect_obstack, offload_targets,
  		    strlen (offload_targets) + 1);
        xputenv (XOBFINISH (&collect_obstack, char *));
 +      if (offload_targets_default)
-+	{
-+	  obstack_grow (&collect_obstack, "OFFLOAD_TARGET_DEFAULT=1",
-+			sizeof ("OFFLOAD_TARGET_DEFAULT=1") - 1);
-+	  xputenv (XOBFINISH (&collect_obstack, char *));
-+	}
++	  xputenv ("OFFLOAD_TARGET_DEFAULT=1");
      }
  
    free (offload_targets);
