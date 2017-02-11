@@ -1,10 +1,10 @@
-%global DATE 20170209
-%global SVNREV 245310
+%global DATE 20170211
+%global SVNREV 245356
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.7
+%global gcc_release 0.8
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -234,7 +234,7 @@ Patch10: gcc7-foffload-default.patch
 Patch11: gcc7-pr79232.patch
 Patch12: gcc7-pr79288.patch
 Patch13: gcc7-pr79341.patch
-Patch14: gcc7-s390x-libsanitizer-CVE.patch
+Patch14: gcc7-pr79388.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -825,7 +825,7 @@ package or when debugging this package.
 %patch11 -p0 -b .pr79232~
 %patch12 -p0 -b .pr79288~
 %patch13 -p0 -b .pr79341~
-%patch14 -p0 -b .s390x-libsanitizer-CVE~
+%patch14 -p0 -b .pr79388~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
@@ -1758,17 +1758,13 @@ echo 'INPUT ( %{_prefix}/lib/'`echo ../../../../lib64/libatomic.so.1.* | sed 's,
 %if %{build_libasan}
 rm -f libasan.so
 echo 'INPUT ( %{_prefix}/lib64/'`echo ../../../../lib64/libasan.so.4.* | sed 's,^.*liba,liba,'`' )' > libasan.so
-%ifnarch s390x
 echo 'INPUT ( %{_prefix}/lib/'`echo ../../../../lib64/libasan.so.4.* | sed 's,^.*liba,liba,'`' )' > 32/libasan.so
 mv ../../../../lib/libasan_preinit.o 32/libasan_preinit.o
-%endif
 %endif
 %if %{build_libubsan}
 rm -f libubsan.so
 echo 'INPUT ( %{_prefix}/lib64/'`echo ../../../../lib64/libubsan.so.0.* | sed 's,^.*libu,libu,'`' )' > libubsan.so
-%ifnarch s390x
 echo 'INPUT ( %{_prefix}/lib/'`echo ../../../../lib64/libubsan.so.0.* | sed 's,^.*libu,libu,'`' )' > 32/libubsan.so
-%endif
 %endif
 %if %{build_libcilkrts}
 rm -f libcilkrts.so
@@ -2500,7 +2496,6 @@ fi
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/32/libatomic.a
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/32/libatomic.so
 %endif
-%ifnarch s390x
 %if %{build_libasan}
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/32/libasan.a
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/32/libasan.so
@@ -2509,7 +2504,6 @@ fi
 %if %{build_libubsan}
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/32/libubsan.a
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/32/libubsan.so
-%endif
 %endif
 %if %{build_libcilkrts}
 %{_prefix}/lib/gcc/%{gcc_target_platform}/%{gcc_major}/32/libcilkrts.a
@@ -3247,6 +3241,15 @@ fi
 %endif
 
 %changelog
+* Sat Feb 11 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.8
+- update from the trunk
+  - PRs c++/71285, c++/78897, c++/78908, c++/79143, c++/79184, c++/79316,
+	c++/79350, c++/79401, c++/79435, c++/79457, ipa/70795,
+	middle-end/79454, target/79295, tree-optimization/66612,
+	tree-optimization/79411
+- fix combiner get_last_value handling (PRs rtl-optimization/79388,
+  rtl-optimization/79450)
+
 * Thu Feb  9 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.7
 - update from the trunk
   - PRs c++/70448, c++/71193, c++/79360, c++/79372, c++/79377, c++/79379,

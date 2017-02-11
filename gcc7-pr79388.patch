@@ -1,0 +1,76 @@
+2017-02-10  Jakub Jelinek  <jakub@redhat.com>
+
+	PR rtl-optimization/79388
+	PR rtl-optimization/79450
+	* combine.c (distribute_notes): When removing TEM_INSN for which
+	corresponding dest has last value recorded, invalidate that last
+	value.
+
+	* gcc.c-torture/execute/pr79388.c: New test.
+	* gcc.c-torture/execute/pr79450.c: New test.
+
+--- gcc/combine.c.jj	2017-01-30 09:31:48.000000000 +0100
++++ gcc/combine.c	2017-02-10 17:05:57.500482518 +0100
+@@ -14288,6 +14288,11 @@ distribute_notes (rtx notes, rtx_insn *f
+ 					    NULL_RTX, NULL_RTX, NULL_RTX);
+ 			  distribute_links (LOG_LINKS (tem_insn));
+ 
++			  unsigned int regno = REGNO (XEXP (note, 0));
++			  reg_stat_type *rsp = &reg_stat[regno];
++			  if (rsp->last_set == tem_insn)
++			    record_value_for_reg (XEXP (note, 0), NULL, NULL_RTX);
++
+ 			  SET_INSN_DELETED (tem_insn);
+ 			  if (tem_insn == i2)
+ 			    i2 = NULL;
+--- gcc/testsuite/gcc.c-torture/execute/pr79388.c.jj	2017-02-10 17:03:01.993814529 +0100
++++ gcc/testsuite/gcc.c-torture/execute/pr79388.c	2017-02-10 17:02:50.000000000 +0100
+@@ -0,0 +1,23 @@
++/* PR rtl-optimization/79388 */
++/* { dg-additional-options "-fno-tree-coalesce-vars" } */
++
++unsigned int a, c;
++
++__attribute__ ((noinline, noclone)) unsigned int
++foo (unsigned int p)
++{
++  p |= 1;
++  p &= 0xfffe;
++  p %= 0xffff;
++  c = p;
++  return a + p;
++}
++
++int
++main (void)
++{
++  int x = foo (6);
++  if (x != 6)
++    __builtin_abort();
++  return 0;
++}
+--- gcc/testsuite/gcc.c-torture/execute/pr79450.c.jj	2017-02-10 17:03:45.698233423 +0100
++++ gcc/testsuite/gcc.c-torture/execute/pr79450.c	2017-02-10 17:03:39.000000000 +0100
+@@ -0,0 +1,22 @@
++/* PR rtl-optimization/79450 */
++
++unsigned int
++foo (unsigned char x, unsigned long long y)
++{
++  do
++    {
++      x &= !y;
++      x %= 24;
++    }
++  while (x < y);
++  return x + y;
++}
++
++int
++main (void)
++{
++  unsigned int x = foo (1, 0);
++  if (x != 1)
++    __builtin_abort ();
++  return 0;
++}
