@@ -1,9 +1,9 @@
-%global DATE 20170118
-%global SVNREV 244565
+%global DATE 20170216
+%global SVNREV 245503
 %global gcc_version 6.3.1
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 2
+%global gcc_release 3
 %global _unpackaged_files_terminate_build 0
 %global _performance_build 1
 # Hardening slows the compiler way too much.
@@ -3107,6 +3107,24 @@ fi
 %doc rpm.doc/changelogs/libcc1/ChangeLog*
 
 %changelog
+* Thu Feb 16 2017 Jakub Jelinek <jakub@redhat.com> 6.3.1-3
+- update from the 6 branch
+  - PRs c++/77284, c++/77545, c++/78897, c++/78908, c++/79176, c++/79296,
+	c++/79377, c++/79429, c/79428, c/79431, c/79471, fortran/70696,
+	fortran/70697, fortran/79305, ipa/71207, ipa/79043, libstdc++/59161,
+	libstdc++/59170, libstdc++/69301, libstdc++/69321, libstdc++/72792,
+	libstdc++/72793, libstdc++/78134, libstdc++/78273, libstdc++/78346,
+	libstdc++/78702, libstdc++/78979, libstdc++/79114, libstdc++/79195,
+	libstdc++/79254, lto/69188, lto/79061, middle-end/61225,
+	middle-end/78742, middle-end/79399, rtl-optimization/79121,
+	target/65484, target/71017, target/77439, target/77455, target/78478,
+	target/78862, target/78945, target/79079, target/79197, target/79268,
+	target/79495, testsuite/70583, translation/79397,
+	tree-optimization/71824, tree-optimization/72488,
+	tree-optimization/77318, tree-optimization/79034,
+	tree-optimization/79267, tree-optimization/79338,
+	tree-optimization/79409, tree-optimization/79411
+
 * Wed Jan 18 2017 Jakub Jelinek <jakub@redhat.com> 6.3.1-2
 - update from the 6 branch
   - PRs c++/71182, c++/77812, c++/78341, c++/78693, c++/78949, debug/78839,
