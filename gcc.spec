@@ -1,10 +1,10 @@
-%global DATE 20170211
-%global SVNREV 245356
+%global DATE 20170219
+%global SVNREV 245573
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.8
+%global gcc_release 0.9
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -231,10 +231,6 @@ Patch7: gcc7-libstdc++-docs.patch
 Patch8: gcc7-no-add-needed.patch
 Patch9: gcc7-aarch64-async-unw-tables.patch
 Patch10: gcc7-foffload-default.patch
-Patch11: gcc7-pr79232.patch
-Patch12: gcc7-pr79288.patch
-Patch13: gcc7-pr79341.patch
-Patch14: gcc7-pr79388.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -822,10 +818,6 @@ package or when debugging this package.
 %patch8 -p0 -b .no-add-needed~
 %patch9 -p0 -b .aarch64-async-unw-tables~
 %patch10 -p0 -b .foffload-default~
-%patch11 -p0 -b .pr79232~
-%patch12 -p0 -b .pr79288~
-%patch13 -p0 -b .pr79341~
-%patch14 -p0 -b .pr79388~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
@@ -3241,6 +3233,24 @@ fi
 %endif
 
 %changelog
+* Sun Feb 19 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.9
+- update from the trunk
+  - PRs bootstrap/79567, c++/77659, c++/77790, c++/78572, c++/78690,
+	c++/79050, c++/79296, c++/79301, c++/79363, c++/79420, c++/79461,
+	c++/79463, c++/79464, c++/79502, c++/79508, c++/79512, c++/79533,
+	c++/79549, c++/79556, c/79471, c/79478, c/79515, fortran/65542,
+	ipa/79224, libstdc++/78723, libstdc++/79348, libstdc++/79467,
+	libstdc++/79486, libstdc++/79513, middle-end/61225, middle-end/79432,
+	middle-end/79448, middle-end/79496, middle-end/79505,
+	middle-end/79521, middle-end/79536, middle-end/79576,
+	rtl-optimization/78127, rtl-optimization/79286,
+	rtl-optimization/79541, rtl-optimization/79574,
+	rtl-optimization/79577, sanitizer/79562, target/79261, target/79282,
+	target/79404, target/79421, target/79449, target/79462, target/79481,
+	target/79487, target/79495, target/79498, target/79559, target/79569,
+	tree-optimization/79095, tree-optimization/79347,
+	tree-optimization/79529, tree-optimization/79552, tree-ssa/56727
+
 * Sat Feb 11 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.8
 - update from the trunk
   - PRs c++/71285, c++/78897, c++/78908, c++/79143, c++/79184, c++/79316,

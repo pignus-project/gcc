@@ -1,6 +1,6 @@
 --- gcc/Makefile.in.jj	2015-06-06 10:00:25.000000000 +0200
 +++ gcc/Makefile.in	2015-11-04 14:56:02.643536437 +0100
-@@ -1013,7 +1013,7 @@ BUILD_LIBDEPS= $(BUILD_LIBIBERTY)
+@@ -1046,7 +1046,7 @@ BUILD_LIBDEPS= $(BUILD_LIBIBERTY)
  # and the system's installed libraries.
  LIBS = @LIBS@ libcommon.a $(CPPLIB) $(LIBINTL) $(LIBICONV) $(LIBBACKTRACE) \
  	$(LIBIBERTY) $(LIBDECNUMBER) $(HOST_LIBS)
@@ -9,7 +9,7 @@
  	$(ZLIB)
  # Any system libraries needed just for GNAT.
  SYSLIBS = @GNAT_LIBEXC@
-@@ -2058,6 +2058,15 @@ $(out_object_file): $(out_file)
+@@ -2196,6 +2196,15 @@ $(out_object_file): $(out_file)
  $(common_out_object_file): $(common_out_file)
  	$(COMPILE) $<
  	$(POSTCOMPILE)
@@ -27,25 +27,11 @@
  # and compile them.
 --- gcc/graphite.h.jj	2016-01-27 12:44:06.000000000 +0100
 +++ gcc/graphite.h	2016-01-27 13:26:38.309876856 +0100
-@@ -36,6 +36,7 @@ along with GCC; see the file COPYING3.
- #include <isl/ilp.h>
+@@ -37,6 +37,579 @@ along with GCC; see the file COPYING3.
  #include <isl/schedule.h>
  #include <isl/ast_build.h>
+ #include <isl/schedule_node.h>
 +#include <dlfcn.h>
- 
- #ifdef HAVE_ISL_OPTIONS_SET_SCHEDULE_SERIALIZE_SCCS
- /* isl 0.15 or later.  */
-@@ -47,6 +48,591 @@ along with GCC; see the file COPYING3.
- # define isl_stat_ok 0
- #endif
- 
-+#ifdef HAVE_ISL_OPTIONS_SET_SCHEDULE_SERIALIZE_SCCS
-+#define DYNSYM_SCHEDULE_FUSE DYNSYM (isl_options_set_schedule_serialize_sccs)
-+#define DYNSYM_SET_YAML_STYLE DYNSYM (isl_printer_set_yaml_style);
-+#else
-+#define DYNSYM_SCHEDULE_FUSE DYNSYM (isl_options_set_schedule_fuse)
-+#define DYNSYM_SET_YAML_STYLE
-+#endif
 +
 +#define DYNSYMS \
 +  DYNSYM (isl_aff_add_coefficient_si); \
@@ -109,8 +95,8 @@
 +  DYNSYM (isl_map_set_tuple_id); \
 +  DYNSYM (isl_map_universe); \
 +  DYNSYM (isl_options_set_on_error); \
-+  DYNSYM_SCHEDULE_FUSE; \
-+  DYNSYM_SET_YAML_STYLE \
++  DYNSYM (isl_options_set_schedule_serialize_sccs); \
++  DYNSYM (isl_printer_set_yaml_style); \
 +  DYNSYM (isl_options_set_schedule_max_constant_term); \
 +  DYNSYM (isl_options_set_schedule_maximize_band_depth); \
 +  DYNSYM (isl_printer_free); \
@@ -399,12 +385,8 @@
 +#define isl_map_set_tuple_id (*isl_pointers__.p_isl_map_set_tuple_id)
 +#define isl_map_universe (*isl_pointers__.p_isl_map_universe)
 +#define isl_options_set_on_error (*isl_pointers__.p_isl_options_set_on_error)
-+#ifdef HAVE_ISL_OPTIONS_SET_SCHEDULE_SERIALIZE_SCCS
 +#define isl_options_set_schedule_serialize_sccs (*isl_pointers__.p_isl_options_set_schedule_serialize_sccs)
 +#define isl_printer_set_yaml_style (*isl_pointers__.p_isl_printer_set_yaml_style)
-+#else
-+#define isl_options_set_schedule_fuse (*isl_pointers__.p_isl_options_set_schedule_fuse)
-+#endif
 +#define isl_options_set_schedule_max_constant_term (*isl_pointers__.p_isl_options_set_schedule_max_constant_term)
 +#define isl_options_set_schedule_maximize_band_depth (*isl_pointers__.p_isl_options_set_schedule_maximize_band_depth)
 +#define isl_printer_free (*isl_pointers__.p_isl_printer_free)
@@ -574,7 +556,6 @@
 +#define isl_printer_print_schedule (*isl_pointers__.p_isl_printer_print_schedule)
 +#define isl_set_set_dim_id (*isl_pointers__.p_isl_set_set_dim_id)
 +#define isl_union_map_coalesce (*isl_pointers__.p_isl_union_map_coalesce)
-+
 +#define isl_multi_val_set_val (*isl_pointers__.p_isl_multi_val_set_val)
 +#define isl_multi_val_zero (*isl_pointers__.p_isl_multi_val_zero)
 +#define isl_options_set_schedule_max_coefficient (*isl_pointers__.p_isl_options_set_schedule_max_coefficient)
@@ -623,13 +604,12 @@
 +#define isl_ast_node_mark_get_node (*isl_pointers__.p_isl_ast_node_mark_get_node)
 +#define isl_schedule_node_band_member_get_ast_loop_type (*isl_pointers__.p_isl_schedule_node_band_member_get_ast_loop_type)
 +#define isl_schedule_node_band_member_set_ast_loop_type (*isl_pointers__.p_isl_schedule_node_band_member_set_ast_loop_type)
-+
+ 
  typedef struct poly_dr *poly_dr_p;
  
- typedef struct poly_bb *poly_bb_p;
 --- gcc/graphite.c.jj	2015-11-04 14:15:32.000000000 +0100
 +++ gcc/graphite.c	2015-11-04 14:56:02.645536409 +0100
-@@ -54,6 +54,34 @@ along with GCC; see the file COPYING3.
+@@ -55,6 +55,34 @@ along with GCC; see the file COPYING3.
  #include "tree-vectorizer.h"
  #include "graphite.h"
  
@@ -664,7 +644,7 @@
  /* Print global statistics to FILE.  */
  
  static void
-@@ -298,6 +326,15 @@ graphite_transform_loops (void)
+@@ -299,6 +327,15 @@ graphite_transform_loops (void)
    if (parallelized_function_p (cfun->decl))
      return;
  
