@@ -27,10 +27,11 @@
  # and compile them.
 --- gcc/graphite.h.jj	2016-01-27 12:44:06.000000000 +0100
 +++ gcc/graphite.h	2016-01-27 13:26:38.309876856 +0100
-@@ -37,6 +37,579 @@ along with GCC; see the file COPYING3.
+@@ -37,6 +37,586 @@ along with GCC; see the file COPYING3.
  #include <isl/schedule.h>
  #include <isl/ast_build.h>
  #include <isl/schedule_node.h>
++#include <isl/version.h>
 +#include <dlfcn.h>
 +
 +#define DYNSYMS \
@@ -248,8 +249,6 @@
 +  DYNSYM (isl_val_add_ui); \
 +  DYNSYM (isl_val_copy); \
 +  DYNSYM (isl_val_free); \
-+  DYNSYM (isl_val_get_num_gmp); \
-+  DYNSYM (isl_val_int_from_gmp); \
 +  DYNSYM (isl_val_int_from_si); \
 +  DYNSYM (isl_val_int_from_ui); \
 +  DYNSYM (isl_val_mul); \
@@ -313,7 +312,12 @@
 +  DYNSYM (isl_ast_build_node_from_schedule); \
 +  DYNSYM (isl_ast_node_mark_get_node); \
 +  DYNSYM (isl_schedule_node_band_member_get_ast_loop_type); \
-+  DYNSYM (isl_schedule_node_band_member_set_ast_loop_type);
++  DYNSYM (isl_schedule_node_band_member_set_ast_loop_type); \
++  DYNSYM (isl_val_n_abs_num_chunks); \
++  DYNSYM (isl_val_get_abs_num_chunks); \
++  DYNSYM (isl_val_int_from_chunks); \
++  DYNSYM (isl_val_is_neg); \
++  DYNSYM (isl_version);
 +
 +extern struct isl_pointers_s__
 +{
@@ -538,8 +542,6 @@
 +#define isl_val_add_ui (*isl_pointers__.p_isl_val_add_ui)
 +#define isl_val_copy (*isl_pointers__.p_isl_val_copy)
 +#define isl_val_free (*isl_pointers__.p_isl_val_free)
-+#define isl_val_get_num_gmp (*isl_pointers__.p_isl_val_get_num_gmp)
-+#define isl_val_int_from_gmp (*isl_pointers__.p_isl_val_int_from_gmp)
 +#define isl_val_int_from_si (*isl_pointers__.p_isl_val_int_from_si)
 +#define isl_val_int_from_ui (*isl_pointers__.p_isl_val_int_from_ui)
 +#define isl_val_mul (*isl_pointers__.p_isl_val_mul)
@@ -604,12 +606,24 @@
 +#define isl_ast_node_mark_get_node (*isl_pointers__.p_isl_ast_node_mark_get_node)
 +#define isl_schedule_node_band_member_get_ast_loop_type (*isl_pointers__.p_isl_schedule_node_band_member_get_ast_loop_type)
 +#define isl_schedule_node_band_member_set_ast_loop_type (*isl_pointers__.p_isl_schedule_node_band_member_set_ast_loop_type)
++#define isl_val_n_abs_num_chunks (*isl_pointers__.p_isl_val_n_abs_num_chunks)
++#define isl_val_get_abs_num_chunks (*isl_pointers__.p_isl_val_get_abs_num_chunks)
++#define isl_val_int_from_chunks (*isl_pointers__.p_isl_val_int_from_chunks)
++#define isl_val_is_neg (*isl_pointers__.p_isl_val_is_neg)
++#define isl_version (*isl_pointers__.p_isl_version)
  
  typedef struct poly_dr *poly_dr_p;
  
+@@ -458,5 +1038,6 @@ extern void build_scops (vec<scop_p> *);
+ extern void dot_all_sese (FILE *, vec<sese_l> &);
+ extern void dot_sese (sese_l &);
+ extern void dot_cfg ();
++extern const char *get_isl_version (bool);
+ 
+ #endif
 --- gcc/graphite.c.jj	2015-11-04 14:15:32.000000000 +0100
 +++ gcc/graphite.c	2015-11-04 14:56:02.645536409 +0100
-@@ -55,6 +55,34 @@ along with GCC; see the file COPYING3.
+@@ -55,6 +55,35 @@ along with GCC; see the file COPYING3.
  #include "tree-vectorizer.h"
  #include "graphite.h"
  
@@ -638,13 +652,14 @@
 +  while (0)
 +  DYNSYMS
 +#undef DYNSYM
++  isl_pointers__.inited = true;
 +  return true;
 +}
 +
  /* Print global statistics to FILE.  */
  
  static void
-@@ -299,6 +327,15 @@ graphite_transform_loops (void)
+@@ -299,6 +328,15 @@ graphite_transform_loops (void)
    if (parallelized_function_p (cfun->decl))
      return;
  
@@ -660,3 +675,37 @@
    ctx = isl_ctx_alloc ();
    isl_options_set_on_error (ctx, ISL_ON_ERROR_ABORT);
    if (!graphite_initialize (ctx))
+@@ -342,6 +380,14 @@ graphite_transform_loops (void)
+   isl_ctx_free (ctx);
+ }
+ 
++const char *
++get_isl_version (bool force)
++{
++  if (force)
++    init_isl_pointers ();
++  return (isl_pointers__.inited && isl_version) ? isl_version () : "none";
++}
++
+ #else /* If isl is not available: #ifndef HAVE_isl.  */
+ 
+ static void
+--- gcc/toplev.c.jj	2017-02-19 13:02:31.000000000 +0100
++++ gcc/toplev.c	2017-02-19 16:50:25.536301350 +0100
+@@ -94,6 +94,7 @@ along with GCC; see the file COPYING3.
+ 
+ #ifdef HAVE_isl
+ #include <isl/version.h>
++extern const char *get_isl_version (bool);
+ #endif
+ 
+ static void general_init (const char *, bool);
+@@ -683,7 +684,7 @@ print_version (FILE *file, const char *i
+ #ifndef HAVE_isl
+ 	   "none"
+ #else
+-	   isl_version ()
++	   get_isl_version (*indent == 0)
+ #endif
+ 	   );
+   if (strcmp (GCC_GMP_STRINGIFY_VERSION, gmp_version))
