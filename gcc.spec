@@ -231,6 +231,7 @@ Patch7: gcc7-libstdc++-docs.patch
 Patch8: gcc7-no-add-needed.patch
 Patch9: gcc7-aarch64-async-unw-tables.patch
 Patch10: gcc7-foffload-default.patch
+Patch11: gcc7-Wno-format-security.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -818,6 +819,7 @@ package or when debugging this package.
 %patch8 -p0 -b .no-add-needed~
 %patch9 -p0 -b .aarch64-async-unw-tables~
 %patch10 -p0 -b .foffload-default~
+%patch11 -p0 -b .Wno-format-security~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
