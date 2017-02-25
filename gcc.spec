@@ -968,6 +968,7 @@ OPT_FLAGS=`echo %{optflags}|sed -e 's/\(-Wp,\)\?-D_FORTIFY_SOURCE=[12]//g'`
 OPT_FLAGS=`echo $OPT_FLAGS|sed -e 's/-m64//g;s/-m32//g;s/-m31//g'`
 OPT_FLAGS=`echo $OPT_FLAGS|sed -e 's/-mfpmath=sse/-mfpmath=sse -msse2/g'`
 OPT_FLAGS=`echo $OPT_FLAGS|sed -e 's/ -pipe / /g'`
+OPT_FLAGS=`echo $OPT_FLAGS|sed -e 's/-Werror=format-security/-Wformat-security/g'`
 %ifarch sparc
 OPT_FLAGS=`echo $OPT_FLAGS|sed -e 's/-mcpu=ultrasparc/-mtune=ultrasparc/g;s/-mcpu=v[78]//g'`
 %endif
@@ -1002,7 +1003,7 @@ mkdir obj-offload-nvptx-none
 cd obj-offload-nvptx-none
 CC="$CC" CXX="$CXX" CFLAGS="$OPT_FLAGS" \
 	CXXFLAGS="`echo " $OPT_FLAGS " | sed 's/ -Wall / /g;s/ -fexceptions / /g' \
-		  | sed 's/ -Werror=format-security / -Wformat -Wformat-security /'`" \
+		  | sed 's/ -Wformat-security / -Wformat -Wformat-security /'`" \
 	XCFLAGS="$OPT_FLAGS" TCFLAGS="$OPT_FLAGS" \
 	../configure --disable-bootstrap --disable-sjlj-exceptions \
 	--enable-newlib-io-long-long --with-build-time-tools=${IROOT}%{_prefix}/nvptx-none/bin \
@@ -1144,7 +1145,7 @@ CONFIGURE_OPTS="\
 
 CC="$CC" CXX="$CXX" CFLAGS="$OPT_FLAGS" \
 	CXXFLAGS="`echo " $OPT_FLAGS " | sed 's/ -Wall / /g;s/ -fexceptions / /g' \
-		  | sed 's/ -Werror=format-security / -Wformat -Werror=format-security /'`" \
+		  | sed 's/ -Wformat-security / -Wformat -Wformat-security /'`" \
 	XCFLAGS="$OPT_FLAGS" TCFLAGS="$OPT_FLAGS" \
 	../configure --enable-bootstrap \
 	--enable-languages=c,c++,objc,obj-c++,fortran${enablelada}${enablelgo},lto \
@@ -1163,9 +1164,9 @@ CXX="`%{gcc_target_platform}/libstdc++-v3/scripts/testsuite_flags --build-cxx` `
 # unnecessarily.
 mkdir objlibgccjit
 cd objlibgccjit
-CC="$CC" CXX="$CXX" CFLAGS="`echo $OPT_FLAGS | sed 's/-Werror=format-security//'`" \
+CC="$CC" CXX="$CXX" CFLAGS="$OPT_FLAGS" \
 	CXXFLAGS="`echo " $OPT_FLAGS " | sed 's/ -Wall / /g;s/ -fexceptions / /g' \
-		  | sed 's/-Werror=format-security//'`" \
+		  | sed 's/ -Wformat-security / -Wformat -Wformat-security /'`" \
 	XCFLAGS="$OPT_FLAGS" TCFLAGS="$OPT_FLAGS" \
 	../../configure --disable-bootstrap --enable-host-shared \
 	--enable-languages=jit $CONFIGURE_OPTS
