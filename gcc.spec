@@ -1,10 +1,10 @@
-%global DATE 20170219
-%global SVNREV 245573
+%global DATE 20170225
+%global SVNREV 245736
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.9
+%global gcc_release 0.10
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -3233,6 +3233,27 @@ fi
 %endif
 
 %changelog
+* Sat Feb 25 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.10
+- update from the trunk
+  - PRs c++/17729, c++/41727, c++/50308, c++/69523, c++/78139, c++/78282,
+	c++/79361, c++/79380, c++/79400, c++/79470, c++/79500, c++/79503,
+	c++/79535, c++/79566, c++/79580, c++/79588, c++/79606, c++/79607,
+	c++/79639, c++/79641, c++/79653, c++/79654, c++/79655, c++/79657,
+	c++/79664, c++/79679, c/79662, c/79677, c/79684, debug/77589,
+	fortran/79229, fortran/79382, fortran/79402, fortran/79434,
+	fortran/79447, fortran/79523, fortran/79597, fortran/79599,
+	fortran/79601, go/79642, lto/79579, lto/79587, middle-end/79396,
+	middle-end/79537, middle-end/79665, rtl-optimization/68749,
+	rtl-optimization/79286, sanitizer/79558, sanitizer/79589,
+	target/71017, target/78012, target/78056, target/78660, target/79211,
+	target/79473, target/79494, target/79568, target/79570, target/79593,
+	target/79633, translation/79638, translation/79705,
+	tree-optimization/61441, tree-optimization/68644,
+	tree-optimization/79389, tree-optimization/79578,
+	tree-optimization/79621, tree-optimization/79649,
+	tree-optimization/79663, tree-optimization/79666,
+	tree-optimization/79673, tree-optimization/79683
+
 * Sun Feb 19 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.9
 - update from the trunk
   - PRs bootstrap/79567, c++/77659, c++/77790, c++/78572, c++/78690,
