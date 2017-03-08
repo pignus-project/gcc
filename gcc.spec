@@ -1,10 +1,10 @@
-%global DATE 20170225
-%global SVNREV 245736
+%global DATE 20170308
+%global SVNREV 245981
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.10
+%global gcc_release 0.11
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -232,6 +232,10 @@ Patch8: gcc7-no-add-needed.patch
 Patch9: gcc7-aarch64-async-unw-tables.patch
 Patch10: gcc7-foffload-default.patch
 Patch11: gcc7-Wno-format-security.patch
+Patch12: gcc7-pr79932-1.patch
+Patch13: gcc7-pr79932-2.patch
+Patch14: gcc7-pr79941.patch
+Patch15: gcc7-pr79944.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -820,6 +824,10 @@ package or when debugging this package.
 %patch9 -p0 -b .aarch64-async-unw-tables~
 %patch10 -p0 -b .foffload-default~
 %patch11 -p0 -b .Wno-format-security~
+%patch12 -p0 -b .pr79932-1~
+%patch13 -p0 -b .pr79932-2~
+%patch14 -p0 -b .pr79941~
+%patch15 -p0 -b .pr79944~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
@@ -3236,6 +3244,37 @@ fi
 %endif
 
 %changelog
+* Wed Mar  8 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.11
+- update from the trunk
+  - PRs ada/79903, ada/79945, c++/42000, c++/64574, c++/70266, c++/71568,
+	c++/79414, c++/79681, c++/79746, c++/79782, c++/79791, c++/79796,
+	c++/79821, c++/79822, c++/79825, c/79756, c/79758, c/79834, c/79836,
+	c/79837, c/79847, c/79855, c/79940, demangler/67264, demangler/70909,
+	fortran/51119, fortran/78379, fortran/79739, fortran/79841,
+	fortran/79894, libstdc++/79789, libstdc++/79798, lto/78140, lto/79625,
+	lto/79760, middle-end/68270, middle-end/79692, middle-end/79721,
+	middle-end/79731, middle-end/79805, middle-end/79809,
+	middle-end/79818, rtl-optimization/79571, rtl-optimization/79584,
+	rtl-optimization/79780, rtl-optimization/79901, sanitize/79783,
+	sanitizer/79897, sanitizer/79904, target/43763, target/68739,
+	target/79395, target/79439, target/79514, target/79544, target/79729,
+	target/79742, target/79749, target/79752, target/79793, target/79807,
+	target/79812, tree-optimization/45397, tree-optimization/66768,
+	tree-optimization/77536, tree-optimization/79345,
+	tree-optimization/79690, tree-optimization/79691,
+	tree-optimization/79699, tree-optimization/79723,
+	tree-optimization/79732, tree-optimization/79734,
+	tree-optimization/79737, tree-optimization/79740,
+	tree-optimization/79777, tree-optimization/79803,
+	tree-optimization/79824, tree-optimization/79894,
+	tree-optimization/79920, tree-optimization/79943,
+	tree-optimization/79955
+- fix 64 avx512vl and 6 avx512bw intrinsics that were not available with -O0
+  (PR target/79932)
+- temporarily disable incorrect folding of Altivec vmul[oe]u[bh] intrinsics
+  (#1429961, PR middle-end/79941)
+- fix -fsanitize=address with some atomic/sync builtins (PR sanitizer/79944)
+
 * Sat Feb 25 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.10
 - update from the trunk
   - PRs c++/17729, c++/41727, c++/50308, c++/69523, c++/78139, c++/78282,
