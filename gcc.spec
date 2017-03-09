@@ -4,7 +4,7 @@
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
 # %{release}, append them after %{gcc_release} on Release: line.
-%global gcc_release 0.11
+%global gcc_release 0.12
 %global nvptx_tools_gitrev c28050f60193b3b95a18866a96f03334e874e78f
 %global nvptx_newlib_gitrev aadc8eb0ec43b7cd0dd2dfb484bae63c8b05ef24
 %global _unpackaged_files_terminate_build 0
@@ -232,10 +232,9 @@ Patch8: gcc7-no-add-needed.patch
 Patch9: gcc7-aarch64-async-unw-tables.patch
 Patch10: gcc7-foffload-default.patch
 Patch11: gcc7-Wno-format-security.patch
-Patch12: gcc7-pr79932-1.patch
-Patch13: gcc7-pr79932-2.patch
-Patch14: gcc7-pr79941.patch
-Patch15: gcc7-pr79944.patch
+Patch12: gcc7-pr79941.patch
+Patch13: gcc7-pr79969.patch
+Patch14: gcc7-pr79972.patch
 
 Patch1000: nvptx-tools-no-ptxas.patch
 Patch1001: nvptx-tools-build.patch
@@ -824,10 +823,9 @@ package or when debugging this package.
 %patch9 -p0 -b .aarch64-async-unw-tables~
 %patch10 -p0 -b .foffload-default~
 %patch11 -p0 -b .Wno-format-security~
-%patch12 -p0 -b .pr79932-1~
-%patch13 -p0 -b .pr79932-2~
-%patch14 -p0 -b .pr79941~
-%patch15 -p0 -b .pr79944~
+%patch12 -p0 -b .pr79941~
+%patch13 -p0 -b .pr79969~
+%patch14 -p0 -b .pr79972~
 
 cd nvptx-tools-%{nvptx_tools_gitrev}
 %patch1000 -p1 -b .nvptx-tools-no-ptxas~
@@ -3244,6 +3242,16 @@ fi
 %endif
 
 %changelog
+* Thu Mar  9 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.12
+- update from the trunk
+  - PRs c++/71966, c++/79672, c++/79797, c++/79900, ipa/79761, ipa/79764,
+	ipa/79970, middle-end/79971, rtl-optimization/79949, target/65705,
+	target/69804, target/79913, target/79928, tree-optimization/79631,
+	tree-optimization/79977
+- fix DW_AT_decl_line on DW_TAG_enumeration_type for C enumeration
+  definitions following forward declarations (#1423460, PR c/79969)
+- fix ICE with -Walloca (PR tree-optimization/79972)
+
 * Wed Mar  8 2017 Jakub Jelinek <jakub@redhat.com> 7.0.1-0.11
 - update from the trunk
   - PRs ada/79903, ada/79945, c++/42000, c++/64574, c++/70266, c++/71568,
