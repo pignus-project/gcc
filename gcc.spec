@@ -1,5 +1,5 @@
-%global DATE 20170308
-%global SVNREV 245981
+%global DATE 20170309
+%global SVNREV 246007
 %global gcc_version 7.0.1
 %global gcc_major 7
 # Note, gcc_release must be integer, if you want to add suffixes to
